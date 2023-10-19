@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,12 +20,15 @@
                         <li class="nav-item">
                             <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Catalog</a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Gallery</a>
-                        </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Catalog</a>
+                            </li> 
+                            <li class="nav-item">
+                                <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Gallery</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Home" asp-action="Privacy">Contact</a>
                         </li>
@@ -39,9 +45,7 @@
     </div>
 
     <footer class="border-top footer a-text-color a-background-color pt-3">
-        <div class="container">
-            &copy; 2023 - FurnituresService - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+        <div class="container">&copy; 2023 - FurnituresService</div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
