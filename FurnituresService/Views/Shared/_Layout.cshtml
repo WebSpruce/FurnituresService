@@ -20,6 +20,11 @@
                         <li class="nav-item">
                             <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        @if(User.IsInRole("Admin")){
+                            <li class="nav-item">
+                                <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Administration" asp-action="Show">Admin Dashboard</a>
+                            </li>
+                        }
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">

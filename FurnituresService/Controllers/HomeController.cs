@@ -15,7 +15,7 @@ namespace FurnituresService.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("Index","Views/Shared/_Layout");
         }
 
         public IActionResult Privacy()

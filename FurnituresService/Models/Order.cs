@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace asp_mvc_1.Models
+namespace FurnituresService.Models
 {
     public class Order
     {

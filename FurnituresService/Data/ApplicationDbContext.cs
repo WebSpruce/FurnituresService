@@ -1,4 +1,4 @@
-﻿using asp_mvc_1.Models;
+﻿using FurnituresService.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

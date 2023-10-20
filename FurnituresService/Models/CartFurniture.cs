@@ -1,4 +1,4 @@
-﻿namespace asp_mvc_1.Models
+﻿namespace FurnituresService.Models
 {
     public class CartFurniture
     {
