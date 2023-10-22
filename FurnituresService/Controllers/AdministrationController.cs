@@ -35,7 +35,8 @@ namespace FurnituresService.Controllers
             }
             else
             {
-                return File("", "image/jpeg");
+                var furnitureFromDb = _context.Furnitures.Where(f => f.Name == "DEFAULT").FirstOrDefault();
+                return File(furnitureFromDb.ImageData, "image/png");
             }
         }
         [HttpGet]
@@ -52,7 +53,7 @@ namespace FurnituresService.Controllers
             {
                 var selectedCategory = _context.Categories.Where(c => c.Id == furniture.CategoryId).FirstOrDefault();
                 furniture.Category = selectedCategory;
-                Trace.WriteLine($"img: {ImageData}");
+
                 if (ImageData != null && ImageData.Length > 0)
                 {
                     using (var stream = new MemoryStream())
@@ -83,9 +84,9 @@ namespace FurnituresService.Controllers
 
             var categories = _context.Categories.ToList();
             ViewData["Categories"] = new SelectList(categories, "Id", "Name");
-
             var oldFurniture = new Furniture()
             {
+                Id = furniture.Id,
                 Name = furniture.Name,
                 Description = furniture.Description,
                 Price = furniture.Price,
@@ -97,10 +98,44 @@ namespace FurnituresService.Controllers
             return View(oldFurniture);
         }
         [HttpPost]
+        public async Task<IActionResult> Update(IFormFile ImageData, Furniture furniture)
+        {
+            try
+            {
+                var selectedCategory = _context.Categories.Where(c => c.Id == furniture.CategoryId).FirstOrDefault();
+                furniture.Category = selectedCategory;
+                
+                if (ImageData != null && ImageData.Length > 0)
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await ImageData.CopyToAsync(stream);
+                        furniture.ImageData = stream.ToArray();
+                    }
+                }
+
+                _context.Furnitures.Update(furniture);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Show");
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Update POST error: {ex}");
+                return View(furniture);
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var furniture = _context.Furnitures.Find(id);
+            var furniture = _context.Furnitures.Where(f => f.Id == id).FirstOrDefault();
 
+            return View(furniture);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmation(int id)
+        {
+            var furniture = _context.Furnitures.Where(f=>f.Id == id).FirstOrDefault();
+            Trace.WriteLine($"fur: {furniture.Name}");
             if(furniture == null)
             {
                 return NotFound();
