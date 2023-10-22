@@ -2,33 +2,32 @@
 using FurnituresService.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System.Diagnostics;
+using FurnituresService.Interfaces;
 
 namespace FurnituresService.Controllers
 {
-    public class AdministrationController : Controller
+    public class FurnituresController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public AdministrationController(ApplicationDbContext context) 
+        private readonly IFurnituresRepository _furnitureRepo;
+        private readonly ICategoriesRepository _categoryRepo;
+        public FurnituresController(ApplicationDbContext context, IFurnituresRepository furnitureRepo, ICategoriesRepository categoryRepo)
         {
-            _context= context;
+            _context = context;
+            _furnitureRepo = furnitureRepo;
+            _categoryRepo = categoryRepo;
         }
-        [Authorize(Roles = "Admin")]
-        public IActionResult Dashboard()
+        [HttpGet]
+        public async Task<IActionResult> Show()
         {
-            return View();
-        }
-        public IActionResult Show()
-        {
-            var furnitures = _context.Furnitures.ToList();
+            var furnitures = await _furnitureRepo.GetAllAsync();
             return View("Show", furnitures);
         }
-        public FileResult GetImage(int id)
+        public async Task<FileResult> GetImage(int id)
         {
-            var furniture = _context.Furnitures.Find(id);
+            var furniture = await _furnitureRepo.GetByIdAsync(id);
             if(furniture!=null && furniture.ImageData != null)
             {
                 return File(furniture.ImageData, "image/jpeg");
@@ -40,9 +39,9 @@ namespace FurnituresService.Controllers
             }
         }
         [HttpGet]
-        public IActionResult Insert()
+        public async Task<IActionResult> Insert()
         {
-            var categories = _context.Categories.ToList();
+            var categories = await _categoryRepo.GetAllAsync();
             ViewData["Categories"] = new SelectList(categories, "Id", "Name");
             return View("Insert");
         }
@@ -51,7 +50,7 @@ namespace FurnituresService.Controllers
         {
             try
             {
-                var selectedCategory = _context.Categories.Where(c => c.Id == furniture.CategoryId).FirstOrDefault();
+                var selectedCategory = await _categoryRepo.GetByIdAsync(furniture.CategoryId);
                 furniture.Category = selectedCategory;
 
                 if (ImageData != null && ImageData.Length > 0)
@@ -63,8 +62,7 @@ namespace FurnituresService.Controllers
                     }
                 }
 
-                _context.Furnitures.Add(furniture);
-                await _context.SaveChangesAsync();
+                _furnitureRepo.Insert(furniture);
                 return RedirectToAction("Show");
             }catch(Exception ex)
             {
@@ -75,7 +73,7 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var furniture = _context.Furnitures.Where(c=>c.Id==id).FirstOrDefault();
+            var furniture = await _furnitureRepo.GetByIdAsync(id);
             if (furniture == null)
             {
                 await Response.WriteAsync("<script>alert('Couldn't edit this furniture.')</script>");
@@ -114,8 +112,7 @@ namespace FurnituresService.Controllers
                     }
                 }
 
-                _context.Furnitures.Update(furniture);
-                await _context.SaveChangesAsync();
+                _furnitureRepo.Update(furniture);
                 return RedirectToAction("Show");
             }
             catch (Exception ex)
@@ -127,7 +124,7 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var furniture = _context.Furnitures.Where(f => f.Id == id).FirstOrDefault();
+            var furniture = await _furnitureRepo.GetByIdAsync(id);
 
             return View(furniture);
         }
@@ -141,8 +138,7 @@ namespace FurnituresService.Controllers
                 return NotFound();
             }
 
-            _context.Furnitures.Remove(furniture);
-            await _context.SaveChangesAsync();
+            _furnitureRepo.Delete(furniture);
             return RedirectToAction("Show");
         }
     }

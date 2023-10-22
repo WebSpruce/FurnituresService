@@ -22,7 +22,7 @@
                         </li>
                         @if(User.IsInRole("Admin")){
                             <li class="nav-item">
-                                <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Administration" asp-action="Show">Admin Dashboard</a>
+                                <a class="nav-link a-text-color fw-bold" asp-area="" asp-controller="Furnitures" asp-action="Show">Admin Dashboard</a>
                             </li>
                         }
                         @if (SignInManager.IsSignedIn(User))
