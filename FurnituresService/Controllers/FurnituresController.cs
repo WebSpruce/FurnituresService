@@ -66,7 +66,7 @@ namespace FurnituresService.Controllers
                 return RedirectToAction("Show");
             }catch(Exception ex)
             {
-                Trace.WriteLine($"error: {ex}");
+                Trace.WriteLine($"Furniture Insert error: {ex}");
                 return View(furniture);
             }
         }

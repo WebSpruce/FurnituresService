@@ -1,0 +1,32 @@
+﻿@model FurnituresService.Models.Category
+
+@{
+    ViewData["Title"] = "Insert";
+    Layout = "~/Views/Furnitures/_Layout.cshtml";
+}
+
+<h4>Category</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Insert">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Insert" class="btn a-text-color a-field-color" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Show">Back to List</a></button>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

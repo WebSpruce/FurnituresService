@@ -28,6 +28,9 @@ body {
 .a-text-color {
     color: #F5EBE0;
 }
+.a-text-color:hover {
+    color: black;
+}
 .a-text-color2 {
     color: #D6CCC2;
 }
