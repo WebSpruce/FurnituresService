@@ -1,0 +1,44 @@
+﻿@model FurnituresService.Models.Order
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Furnitures/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    <table>
+        <tr class="row">
+            <th class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <td class = "col-sm-10">
+                @Html.DisplayFor(model => model.Status)
+            </td>
+            <th class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </th>
+            <td class = "col-sm-10">
+                @Html.DisplayFor(model => model.OrderDate)
+            </td>
+            <th class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <td class = "col-sm-10">
+                @Html.DisplayFor(model => model.UserId)
+            </td>
+            <th class="col-sm-2">
+                Furnitures
+            </th>
+            <td class="col-sm-10">
+                <select asp-for="OrderFurnitures" class="form-control w-50" asp-items="@(ViewData["Furnitures"] as SelectList)" multiple disabled></select>
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Show">Back to List</a></button>
+</div>

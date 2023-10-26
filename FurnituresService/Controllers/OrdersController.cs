@@ -30,11 +30,28 @@ namespace FurnituresService.Controllers
             return View("Show", orders);
         }
         [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await _ordersRepository.GetByIdAsync(id);
+
+            List<OrderFurniture> orderFurnitures = new List<OrderFurniture>();
+            orderFurnitures = _context.OrderFurnitures.Where(of => of.Order.Id == id).ToList();
+            ICollection<Furniture> tempFurnitures = new Collection<Furniture>();
+            foreach (var item in orderFurnitures)
+            {
+                var furniture = _context.Furnitures.Where(f => f.Id == item.FurnitureId).FirstOrDefault();
+                tempFurnitures.Add(furniture);
+            }
+            ViewData["Furnitures"] = new SelectList(tempFurnitures, "Id", "Name");
+
+            return View("Details", order);
+        }
+        [HttpGet]
         public async Task<IActionResult> Insert()
         {
             var users = await _userRepository.GetAllAsync();
             ViewData["Users"] = new SelectList(users, "Id", "Email");
-            var furnitures = await _furnituresRepository.GetAllAsync();
+            var furnitures = _context.Furnitures.Where(f => f.Name != "DEFAULT").ToList();
             ViewData["Furnitures"] = new SelectList(furnitures, "Id", "Name");
             return View("Insert");
         }
