@@ -44,11 +44,15 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
+                @Html.DisplayFor(modelItem => item.CategoryId)
             </td>
             <td>
-                <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Update" asp-route-id="@item.Id">Edit</a></button> 
+                <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Update" asp-route-id="@item.Id">Edit</a></button>  
+            </td> 
+            <td>
                 <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Details" asp-route-id="@item.Id">Details</a></button> 
+            </td>
+            <td>
                 <button type="button" class="btn a-text-color a-field-color"> <a class="text-decoration-none a-text-color" asp-action="Delete" asp-route-id="@item.Id" method="post">Delete</a></button>
             </td>
         </tr>

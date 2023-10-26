@@ -23,7 +23,7 @@ body {
 }
 
 .a-background-color {
-    background-color: #D5BDAF;
+    background-color: #212529;
 }
 .a-text-color {
     color: #F5EBE0;
@@ -35,5 +35,5 @@ body {
     color: #D6CCC2;
 }
 .a-field-color {
-    background-color: #D6CCC2;
+    background-color: #212529;
 }

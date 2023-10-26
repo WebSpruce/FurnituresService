@@ -14,7 +14,7 @@ namespace FurnituresService.Repository
         }
         public async Task<IEnumerable<Furniture>> GetAllAsync()
         {
-            return await _context.Furnitures.ToListAsync();
+            return await _context.Furnitures.Where(f=>f.Name!="DEFAULT").ToListAsync();
         }
         public async Task<Furniture> GetByIdAsync(int id)
         {
