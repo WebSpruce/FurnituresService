@@ -49,6 +49,13 @@
                     <hr />
                     <li class="nav-item"><a class="a-text-color fw-bold text-decoration-none" asp-controller="Categories" asp-action="Insert">Insert</a></li>
                 </ul>
+                <br />
+                <p class="a-text-color2 text-center">Orders</p>
+                <ul class="nav nav-pills flex-column justify-content-center text-center p-4 a-field-color">
+                    <li class="nav-item"><a class="a-text-color fw-bold text-decoration-none" asp-controller="Orders" asp-action="Show">Show</a></li>
+                    <hr />
+                    <li class="nav-item"><a class="a-text-color fw-bold text-decoration-none" asp-controller="Orders" asp-action="Insert">Insert</a></li>
+                </ul>
             </div>
             <div class="col-md-10">
                 @RenderBody()
