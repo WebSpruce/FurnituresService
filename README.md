@@ -9,3 +9,4 @@
 
 ## Screenshots:
 <img src="https://github.com/WebSpruce/FurnituresService/assets/117351406/7e07e601-e175-407d-9cac-a9e4b77f78cc" width=800>
+

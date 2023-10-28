@@ -71,6 +71,16 @@ namespace FurnituresService.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var furniture = await _furnitureRepo.GetByIdAsync(id);
+
+            var categories = _context.Categories.ToList();
+            ViewData["Categories"] = new SelectList(categories, "Id", "Name");
+
+            return View("Details", furniture);
+        }
+        [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
             var furniture = await _furnitureRepo.GetByIdAsync(id);
