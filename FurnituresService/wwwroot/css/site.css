@@ -37,3 +37,17 @@ body {
 .a-field-color {
     background-color: #212529;
 }
+
+.banner {
+    background-image: url('../../Content/banner.jpg');
+    width:100%;
+}
+.banner-btn {
+    position: relative;
+    top: -99px;
+    right: 419px;
+    background-color: #D6CCC2;
+}
+.banner-btn-text, .banner-btn-text:hover {
+    color: #212529;
+}
