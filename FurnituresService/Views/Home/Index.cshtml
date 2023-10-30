@@ -1,16 +1,45 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<FurnituresService.Models.Furniture>
+
+@{
+    ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
-<div class="banner text-center">
-	<div class="container-fluid">
-		<div class="row align-items-center">
-			<img src="@Url.Content("~/images/banner.jpg")" class="rounded mx-auto d-block" />
-			<div >
-				<button type="button" class="btn banner-btn"><a class="text-decoration-none banner-btn-text">Check this out!</a></button>
-			</div>
-		</div>
+<div class="container-fluid">
+	<div class="row align-items-center">
+		<img src="@Url.Content("~/images/banner.jpg")" class="rounded mx-auto d-block" />
 	</div>
 </div>
-
+<br />
+<div class="container">
+	<div class="row p-1 text-center">
+		@foreach (var item in Model)
+		{
+			<div class="col-sm-12 col-md-6 mb-4 col-lg-4">
+				<div class="product-item a-field-color h-100 p-3">
+					<a>
+						<img src="@Url.Action("GetImage", new {id=item.Id})" alt="product-@item.Name" class="products-img img-fluid">
+					</a>
+					<hr class="a-text-color2 w-50 mx-auto">
+					<h4 class="a-text-color2"><a>@Html.DisplayFor(modelItem=>item.Name)</a></h4>
+					<p class="a-text-color2 fw-bold h5">@Html.DisplayFor(modelItem=>item.Price)$</p>
+					<button type="button" class="btn btn-item"><a class="text-decoration-none banner-btn-text" asp-action="AddToCart" asp-route-id="@item.Id">Add to cart</a></button>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+<br />
+<div class="container">
+	<div class="row">
+		<button type="button" class="btn a-field-color"><a class="text-decoration-none banner-btn-text">Check latest minimalistic furniture!</a></button>
+	</div>
+</div>
+<br />
+<div class="container">
+	<div class="row">
+		<button type="button" class="btn a-field-color"><a class="text-decoration-none banner-btn-text">Contact with us</a></button>
+	</div>
+</div>
+<br />

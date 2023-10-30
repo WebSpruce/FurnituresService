@@ -2,7 +2,7 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<ul class="navbar-nav">
+
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -39,4 +39,4 @@ else
     </li>
 }
 
-</ul>
+

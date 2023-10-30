@@ -18,7 +18,8 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
+    margin:0px;
+    padding:0px;
     background-color: #EDEDE9;
 }
 
@@ -38,16 +39,24 @@ body {
     background-color: #212529;
 }
 
-.banner {
-    background-image: url('../../Content/banner.jpg');
-    width:100%;
-}
 .banner-btn {
     position: relative;
     top: -99px;
-    right: 419px;
+    right: -155px;
     background-color: #D6CCC2;
 }
 .banner-btn-text, .banner-btn-text:hover {
+    color: #212529;
+}
+
+.products-img {
+    float:initial;
+    width: 350px;
+    height: 250px;
+    object-fit: cover;
+}
+
+.btn-item {
+    background-color: #D6CCC2;
     color: #212529;
 }
