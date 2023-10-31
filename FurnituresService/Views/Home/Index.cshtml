@@ -1,8 +1,12 @@
-﻿@model IEnumerable<FurnituresService.Models.Furniture>
-
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<FurnituresService.Models.Furniture>
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	var currentUser = UserManager.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
 }
 
 
@@ -24,7 +28,13 @@
 					<hr class="a-text-color2 w-50 mx-auto">
 					<h4 class="a-text-color2"><a>@Html.DisplayFor(modelItem=>item.Name)</a></h4>
 					<p class="a-text-color2 fw-bold h5">@Html.DisplayFor(modelItem=>item.Price)$</p>
-					<button type="button" class="btn btn-item"><a class="text-decoration-none banner-btn-text" asp-action="AddToCart" asp-route-id="@item.Id">Add to cart</a></button>
+					@if(SignInManager.IsSignedIn(User)){
+						<button type="button" class="btn btn-item"><a class="text-decoration-none banner-btn-text" asp-controller="Home" asp-action="AddToCart" asp-route-userId="@currentUser.Id" asp-route-furnitureId="@item.Id">Add to cart</a></button>
+					}
+					else
+					{
+						<button type="button" class="btn btn-item"><a class="text-decoration-none banner-btn-text" asp-area="Identity" asp-page="/Account/Login">Add to cart</a></button>
+					}
 				</div>
 			</div>
 		}

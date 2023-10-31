@@ -9,7 +9,7 @@ namespace FurnituresService.Models
     {
         public int Id { get; set; }
         [ForeignKey("IdentityUser")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public IdentityUser User { get; set; }
         public ICollection<CartFurniture>? CartFurnitures { get; set; }
     }

@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model FurnituresService.Models.Cart
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Show";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var currentUser = UserManager.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
+    var addedFurnitures = ViewData["AddedFurnitures"] as List<Furniture>;
+    decimal sum = 0;
+}
+
+<div>
+    <div class="a-background-color">
+        <div class="container">
+            <div class="row text-center">
+                <div class="mx-auto">
+                    <h1 class="a-text-color2">Cart</h1>
+                    <p class="mb-4"><a asp-controller="Home" asp-action="Index" class="text-decoration-none a-text-color2">Home</a> / <strong class="a-text-color2">Cart</strong></p>
+                </div>
+                <hr class="w-75 mx-auto a-text-color2" />
+            </div>
+        </div>
+    </div>
+
+    <div class="container a-field-color p-3">
+        <div class="row ">
+            <form class="col-md-12" method="post">
+                <div class="site-blocks-table">
+                    <table class="table table-bordered a-text-color2 text-center">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (addedFurnitures != null && addedFurnitures.Any())
+                            {
+                                @foreach (var item in addedFurnitures)
+                                {
+                                    <tr class="align-middle">
+                                        <td>
+                                            <img src="@Url.Action("GetImage", new {id=item.Id})" alt="Image" class="img-fluid rounded mx-auto d-block" width="100">
+                                        </td>
+                                        <td>
+                                            <h2 class="h5">@item.Name</h2>
+                                        </td>
+                                        <td>$@item.Price</td>
+                                        <td>1</td>
+                                        <td><a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-user="@currentUser" asp-route-furniture="@item" class="btn btn-item">X</a></td>
+                                    </tr>
+                                    sum += item.Price;
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+
+        <div class="row a-text-color2">
+            <div class="col-md-6">
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <button class="btn btn-item" asp-controller="Home" asp-action="Index">Continue Shopping</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="h4" for="coupon">Coupon</label>
+                        <p>Enter your coupon code if you have one.</p>
+                    </div>
+                    <div class="col-md-8 mb-3 mb-md-0">
+                        <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn">Apply Coupon</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pl-5">
+                <div class="row justify-content-end">
+                    <div class="col-md-7">
+                        <div class="row mb-5">
+                            <div class="col-md-6">
+                                <span>Total</span>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <strong>$@sum</strong>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-lg py-3">Proceed To Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @* <table>
+    <tr class="row">
+        <th class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User)
+        </th>
+        <td class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.Id)
+        </td>
+    </tr>
+    </table> *@
+</div>

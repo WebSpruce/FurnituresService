@@ -1,6 +1,8 @@
 ﻿using FurnituresService.Data;
 using FurnituresService.Interfaces;
 using FurnituresService.Models;
+using FurnituresService.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -9,14 +11,18 @@ namespace FurnituresService.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IFurnituresRepository _furnitureRepo;
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, IFurnituresRepository furnituresRepo)
+        private readonly ICartRepository _cartRepository;
+        private readonly IUsersRepository _usersRepository;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        public HomeController(ApplicationDbContext context, IFurnituresRepository furnituresRepo, ICartRepository cartRepository, IUsersRepository usersRepository, SignInManager<IdentityUser> signInManager)
         {
-            _logger = logger;
             _context = context;
             _furnitureRepo = furnituresRepo;
+            _cartRepository = cartRepository;
+            _usersRepository = usersRepository;
+            _signInManager = signInManager;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -38,8 +44,33 @@ namespace FurnituresService.Controllers
 				return File(furnitureFromDb.ImageData, "image/png");
 			}
 		}
+       
+        public async Task<IActionResult> AddToCart(int furnitureId, string userId)
+        {
+            try {
+				if (await _cartRepository.GetByUserId(userId) == null)
+				{
+					Cart newCart = new Cart()
+					{
+						UserId = userId,
+						User = await _usersRepository.GetByIdAsync(userId)
+					};
+					_cartRepository.Insert(newCart);
+				}
 
-		public IActionResult Privacy()
+				var clickedFurniture = await _furnitureRepo.GetByIdAsync(furnitureId);
+                await _cartRepository.InsertFurnitureToCart(userId, clickedFurniture);
+				return RedirectToAction("Show","Cart", new { id = userId });
+			}
+			catch(Exception ex)
+            {
+                Trace.WriteLine($"Home AddToCart error: {ex}");
+                return View("Show");
+	        }
+        }
+
+
+        public IActionResult Privacy()
         {
             return View();
         }

@@ -60,3 +60,8 @@ body {
     background-color: #D6CCC2;
     color: #212529;
 }
+.footer {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+}
