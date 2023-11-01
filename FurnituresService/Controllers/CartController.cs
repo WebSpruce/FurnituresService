@@ -52,12 +52,14 @@ namespace FurnituresService.Controllers
                 return File(furnitureFromDb.ImageData, "image/png");
             }
         }
-		public async Task<IActionResult> RemoveFromCart(IdentityUser user, Furniture furniture)
+		public async Task<IActionResult> RemoveFromCart(string id, int furnitureId)
 		{
             try
             {
-                await _cartRepository.RemoveFurnitureToCart(user, furniture);
-                return RedirectToAction("Show", "Cart", new { id = user.Id });
+				var currentUser = await _usersRepository.GetByIdAsync(id);
+				var clickedFurniture = await _furnituresRepository.GetByIdAsync(furnitureId);
+                await _cartRepository.RemoveFurnitureToCart(currentUser, clickedFurniture);
+                return RedirectToAction("Show", "Cart", new { id = id });
             }
             catch (Exception ex)
             {

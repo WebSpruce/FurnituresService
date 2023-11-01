@@ -33,8 +33,8 @@ namespace FurnituresService.Repository
 		}
 		public async Task<bool> RemoveFurnitureToCart(IdentityUser user, Furniture furniture)
 		{
-			//var cart = _context.Carts.Where(c=>c.UserId =  user.Id).FirstOrDefault();
-			var cf = _context.CartFurnitures.Where(cf=>cf.Cart == cart && cf.Furniture == furniture).FirstOrDefault();
+			var cart = _context.Carts.Where(c => c.UserId == user.Id).FirstOrDefault();
+			var cf = _context.CartFurnitures.Where(cf => cf.Cart == cart && cf.Furniture == furniture).FirstOrDefault();
 			_context.CartFurnitures.Remove(cf);
 			return Save();
 		}
