@@ -29,11 +29,11 @@
 					<h4 class="a-text-color2"><a>@Html.DisplayFor(modelItem=>item.Name)</a></h4>
 					<p class="a-text-color2 fw-bold h5">@Html.DisplayFor(modelItem=>item.Price)$</p>
 					@if(SignInManager.IsSignedIn(User)){
-						<button type="button" class="btn btn-item"><a class="text-decoration-none banner-btn-text" asp-controller="Home" asp-action="AddToCart" asp-route-userId="@currentUser.Id" asp-route-furnitureId="@item.Id">Add to cart</a></button>
+						<button type="button" class="btn btn-item"><a class="text-decoration-none product-btn-text" asp-controller="Home" asp-action="AddToCart" asp-route-userId="@currentUser.Id" asp-route-furnitureId="@item.Id">Add to cart</a></button>
 					}
 					else
 					{
-						<button type="button" class="btn btn-item"><a class="text-decoration-none banner-btn-text" asp-area="Identity" asp-page="/Account/Login">Add to cart</a></button>
+						<button type="button" class="btn btn-item"><a class="text-decoration-none product-btn-text" asp-area="Identity" asp-page="/Account/Login">Add to cart</a></button>
 					}
 				</div>
 			</div>
@@ -43,13 +43,18 @@
 <br />
 <div class="container">
 	<div class="row">
-		<button type="button" class="btn a-field-color"><a class="text-decoration-none banner-btn-text">Check latest minimalistic furniture!</a></button>
+		<div class="minimalistic-banner text-center d-flex justify-content-center align-items-center">
+			<button type="button" class="btn btn-item w-50 align-middle"><a class="text-decoration-none product-btn-text">Check latest minimalistic furniture!</a></button>
+		</div>
+
 	</div>
 </div>
 <br />
 <div class="container">
 	<div class="row">
-		<button type="button" class="btn a-field-color"><a class="text-decoration-none banner-btn-text">Contact with us</a></button>
+		<div class="contact-banner text-center d-flex justify-content-center align-items-center">
+			<button type="button" class="btn btn-item w-50 "><a class="text-decoration-none product-btn-text" asp-controller="Home" asp-action="Contact">Contact with us</a></button>
+		</div>
 	</div>
 </div>
 <br />

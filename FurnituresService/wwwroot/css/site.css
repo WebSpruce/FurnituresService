@@ -26,11 +26,8 @@ body {
 .a-background-color {
     background-color: #212529;
 }
-.a-text-color {
+.a-text-color, .a-text-color:hover {
     color: #F5EBE0;
-}
-.a-text-color:hover {
-    color: black;
 }
 .a-text-color2 {
     color: #D6CCC2;
@@ -39,16 +36,9 @@ body {
     background-color: #212529;
 }
 
-.banner-btn {
-    position: relative;
-    top: -99px;
-    right: -155px;
-    background-color: #D6CCC2;
-}
-.banner-btn-text, .banner-btn-text:hover {
+.product-btn-text, .product-btn-text:hover {
     color: #212529;
 }
-
 .products-img {
     float:initial;
     width: 350px;
@@ -60,6 +50,25 @@ body {
     background-color: #D6CCC2;
     color: #212529;
 }
+
+.minimalistic-banner {
+    background-image: url('../images/minimalisticBanner.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: center;
+    background-size: cover;
+    border-radius:10px;
+    height: 170px;
+}
+.contact-banner {
+    background-image: url('../images/contactBanner.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-radius: 10px;
+    height: 170px;
+}
+
 .footer {
     bottom: 0;
     position: fixed;

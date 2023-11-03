@@ -60,7 +60,7 @@ namespace FurnituresService.Controllers
         }
 
 
-        public IActionResult Privacy()
+        public IActionResult Contact()
         {
             return View();
         }
