@@ -38,7 +38,20 @@ namespace FurnituresService.Repository
 			_context.CartFurnitures.Remove(cf);
 			return Save();
 		}
-		public bool Save()
+        public async Task<bool> RemoveAllFurnituresFromCart(IdentityUser user)
+        {
+            var cart = _context.Carts.Where(c => c.UserId == user.Id).FirstOrDefault();
+			Trace.WriteLine($"user: {user.UserName}, cart: {cart.Id}");
+
+            var cartFurnitureToRemove = _context.CartFurnitures.Where(cf => cf.Cart == cart).ToList();
+
+            if (cartFurnitureToRemove.Any())
+            {
+                _context.CartFurnitures.RemoveRange(cartFurnitureToRemove);
+            }
+            return Save();
+        }
+        public bool Save()
 		{
 			var saved = _context.SaveChanges();
 			return saved > 0 ? true : false;
@@ -48,13 +61,6 @@ namespace FurnituresService.Repository
 		{
 			IEnumerable<Furniture> furnitures = Enumerable.Empty<Furniture>();
 			furnitures = _context.Carts.Where(c => c.UserId == id).SelectMany(c => c.CartFurnitures.Select(cf => cf.Furniture)).ToList();
-			if (furnitures != null)
-			{
-				foreach(var furniture in furnitures)
-				{
-					Trace.WriteLine($"fur: {furniture.Name}");
-				}
-			}
 			return furnitures;
 		}
 

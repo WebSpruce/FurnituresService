@@ -9,6 +9,7 @@ namespace FurnituresService.Interfaces
 		bool Insert(Cart cart);
 		Task<bool> InsertFurnitureToCart(string id, Furniture furniture);
 		Task<bool> RemoveFurnitureToCart(IdentityUser user, Furniture furniture);
+		Task<bool> RemoveAllFurnituresFromCart(IdentityUser user);
 		bool Save();
 
 		IEnumerable<Furniture> GetAddedFurnitures(string id);

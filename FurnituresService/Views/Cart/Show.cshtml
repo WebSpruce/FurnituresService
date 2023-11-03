@@ -65,12 +65,12 @@
 
         <div class="row a-text-color2">
             <div class="col-lg-6 col-md-6 col-sm-4">
-                <button class="btn btn-item" asp-controller="Home" asp-action="Index">Continue Shopping</button>
+                @* <button class="btn btn-item" asp-controller="Home" asp-action="Index">Continue Shopping</button>
                 <br />
                 <label class="h4 mt-3" for="coupon">Coupon</label>
                 <p>Enter your coupon code if you have one.</p>
                 <input type="text" class="form-control py-3 w-50" id="coupon" placeholder="Coupon Code">
-                <button class="btn btn-item mt-3">Apply Coupon</button>
+                <button class="btn btn-item mt-3">Apply Coupon</button> *@
             </div>
             <div class="col-lg-6 col-md-6 col-sm-4">
                 <div class="row justify-content-end text-end">
@@ -79,7 +79,7 @@
                         <strong>$@sum</strong>
                     </div>
                     <div class="col-md-12 col-lg-12 col-sm-12">
-                        <button class="btn btn-item mt-3">Proceed To Checkout</button>
+                        <button class="btn btn-item mt-3"> <a asp-controller="Cart" asp-action="Buy" asp-route-id="@currentUser.Id" class="text-decoration-none text-black">Checkout</a></button>
                     </div>
                 </div>
             </div>

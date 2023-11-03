@@ -142,7 +142,6 @@ namespace FurnituresService.Controllers
         public async Task<IActionResult> DeleteConfirmation(int id)
         {
             var furniture = _context.Furnitures.Where(f=>f.Id == id).FirstOrDefault();
-            Trace.WriteLine($"fur: {furniture.Name}");
             if(furniture == null)
             {
                 return NotFound();
