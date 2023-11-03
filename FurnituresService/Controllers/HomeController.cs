@@ -48,16 +48,6 @@ namespace FurnituresService.Controllers
         public async Task<IActionResult> AddToCart(int furnitureId, string userId)
         {
             try {
-				if (await _cartRepository.GetByUserId(userId) == null)
-				{
-					Cart newCart = new Cart()
-					{
-						UserId = userId,
-						User = await _usersRepository.GetByIdAsync(userId)
-					};
-					_cartRepository.Insert(newCart);
-				}
-
 				var clickedFurniture = await _furnitureRepo.GetByIdAsync(furnitureId);
                 await _cartRepository.InsertFurnitureToCart(userId, clickedFurniture);
 				return RedirectToAction("Show","Cart", new { id = userId });
