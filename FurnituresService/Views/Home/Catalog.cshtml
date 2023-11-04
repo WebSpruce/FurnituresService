@@ -1,0 +1,61 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<FurnituresService.Models.Furniture>
+@inject SignInManager<IdentityUser> SignInManger
+@inject UserManager<IdentityUser> UserManager
+@{
+	ViewData["Title"] = "Catalog";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	var currentUser = UserManager.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
+	var categories = ViewData["Categories"] as List<Category>;
+}
+
+<div class="container">
+	<div class="row">
+		<div class="catalog-banner text-center d-flex justify-content-center align-items-center">
+			<h2 class="header-text">Catalog</h2>
+		</div>
+	</div>
+</div>
+
+<div class="container mt-3">
+	<div class="row">
+		<div class="col-lg-2 col-md-12 mb-4 col-sm-12 a-field-color p-3 rounded">
+			<h3 class="text-center a-text-color2">Categories</h3>
+			<ul>
+				<li><a class="text-decoration-none a-text-color2" href="@Url.Action("Catalog")">All Products</a></li>
+				@if(categories!=null){
+					@foreach(var category in categories)
+					{
+						<li><a class="text-decoration-none a-text-color2" href="@Url.Action("CatalogByCategory", new {categoryId=category.Id})">@category.Name</a></li>
+					}
+				}
+			</ul>
+		</div>
+		<div class="col-lg-10 col-md-12 mb-4 col-sm-12">
+			<div class="row">
+				@foreach (var item in Model)
+				{
+					<div class="col-sm-12 col-md-6 mb-4 col-lg-4">
+						<div class="a-field-color h-100 p-3 rounded">
+							<a>
+								<img src="@Url.Action("GetImage", new {id=item.Id})" alt="product-@item.Name" class="products-img img-fluid">
+							</a>
+							<hr class="a-text-color2 w-50 mx-auto">
+							<h4 class="a-text-color2"><a>@Html.DisplayFor(modelItem=>item.Name)</a></h4>
+							<p class="a-text-color2 fw-bold h5">@Html.DisplayFor(modelItem=>item.Price)$</p>
+							@if (SignInManger.IsSignedIn(User))
+							{
+								<button type="button" class="btn btn-item"><a class="text-decoration-none product-btn-text" asp-controller="Home" asp-action="AddToCart" asp-route-userId="@currentUser.Id" asp-route-furnitureId="@item.Id">Add to cart</a></button>
+							}
+							else
+							{
+								<button type="button" class="btn btn-item"><a class="text-decoration-none product-btn-text" asp-area="Identity" asp-page="/Account/Login">Add to cart</a></button>
+							}
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>

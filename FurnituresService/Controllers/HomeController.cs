@@ -15,13 +15,20 @@ namespace FurnituresService.Controllers
         private readonly IFurnituresRepository _furnitureRepo;
         private readonly ICartRepository _cartRepository;
         private readonly IUsersRepository _usersRepository;
+        private readonly ICategoriesRepository _categoriesRepository;
         private readonly SignInManager<IdentityUser> _signInManager;
-        public HomeController(ApplicationDbContext context, IFurnituresRepository furnituresRepo, ICartRepository cartRepository, IUsersRepository usersRepository, SignInManager<IdentityUser> signInManager)
+        public HomeController(ApplicationDbContext context, 
+            IFurnituresRepository furnituresRepo, 
+            ICartRepository cartRepository, 
+            IUsersRepository usersRepository, 
+            ICategoriesRepository categoriesRepository,
+            SignInManager<IdentityUser> signInManager)
         {
             _context = context;
             _furnitureRepo = furnituresRepo;
             _cartRepository = cartRepository;
             _usersRepository = usersRepository;
+            _categoriesRepository = categoriesRepository;
             _signInManager = signInManager;
         }
         [HttpGet]
@@ -59,11 +66,26 @@ namespace FurnituresService.Controllers
 	        }
         }
 
-
+        [HttpGet]
         public IActionResult Contact()
         {
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> Catalog()
+        {
+            var furnitures = await _furnitureRepo.GetAllAsync();
+            ViewData["Categories"] = await _categoriesRepository.GetAllAsync();
+
+            return View("Catalog", furnitures);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CatalogByCategory(int categoryId)
+        {
+            var furnitures = await _furnitureRepo.GetByCategory(categoryId);
+			ViewData["Categories"] = await _categoriesRepository.GetAllAsync();
+			return View("Catalog", furnitures);
+		}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

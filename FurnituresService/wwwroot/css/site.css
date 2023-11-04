@@ -29,7 +29,7 @@ body {
 .a-text-color, .a-text-color:hover {
     color: #F5EBE0;
 }
-.a-text-color2 {
+.a-text-color2, a-text-color2:hover {
     color: #D6CCC2;
 }
 .a-field-color {
@@ -46,27 +46,33 @@ body {
     object-fit: cover;
 }
 
-.btn-item {
+.btn-item, .header-text {
     background-color: #D6CCC2;
     color: #212529;
 }
+.header-text {
+    border-radius: 10px;
+    width: 20%;
+    padding:10px;
+    opacity: 0.7;
+}
 
-.minimalistic-banner {
-    background-image: url('../images/minimalisticBanner.jpg');
+.minimalistic-banner, .contact-banner, .catalog-banner {
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: center;
     background-size: cover;
-    border-radius:10px;
+    border-radius: 10px;
     height: 170px;
+}
+.minimalistic-banner {
+    background-image: url('../images/minimalisticBanner.jpg');
 }
 .contact-banner {
     background-image: url('../images/contactBanner.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    border-radius: 10px;
-    height: 170px;
+}
+.catalog-banner {
+    background-image: url('../images/catalogBanner.jpg');
 }
 
 .footer {

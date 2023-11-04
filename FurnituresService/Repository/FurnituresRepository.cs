@@ -20,6 +20,10 @@ namespace FurnituresService.Repository
         {
             return await _context.Furnitures.Where(c => c.Id == id).FirstOrDefaultAsync();
         }
+        public async Task<IEnumerable<Furniture>> GetByCategory(int id)
+        {
+            return await _context.Furnitures.Where(c => c.CategoryId == id && c.Name!="DEFAULT").ToListAsync();
+        }
         public bool Insert(Furniture furniture)
         {
             _context.Furnitures.AddAsync(furniture);

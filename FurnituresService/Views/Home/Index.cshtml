@@ -21,7 +21,7 @@
 		@foreach (var item in Model)
 		{
 			<div class="col-sm-12 col-md-6 mb-4 col-lg-4">
-				<div class="product-item a-field-color h-100 p-3">
+				<div class="a-field-color h-100 p-3 rounded">
 					<a>
 						<img src="@Url.Action("GetImage", new {id=item.Id})" alt="product-@item.Name" class="products-img img-fluid">
 					</a>
@@ -44,7 +44,7 @@
 <div class="container">
 	<div class="row">
 		<div class="minimalistic-banner text-center d-flex justify-content-center align-items-center">
-			<button type="button" class="btn btn-item w-50 align-middle"><a class="text-decoration-none product-btn-text">Check latest minimalistic furniture!</a></button>
+			<button type="button" class="btn header-text w-50 align-middle"><a class="text-decoration-none product-btn-text">Check latest minimalistic furniture!</a></button>
 		</div>
 
 	</div>
@@ -53,7 +53,7 @@
 <div class="container">
 	<div class="row">
 		<div class="contact-banner text-center d-flex justify-content-center align-items-center">
-			<button type="button" class="btn btn-item w-50 "><a class="text-decoration-none product-btn-text" asp-controller="Home" asp-action="Contact">Contact with us</a></button>
+			<button type="button" class="btn header-text w-50 "><a class="text-decoration-none product-btn-text" asp-controller="Home" asp-action="Contact">Contact with us</a></button>
 		</div>
 	</div>
 </div>
