@@ -43,6 +43,7 @@ namespace FurnituresService.Controllers
                 tempFurnitures.Add(furniture);
             }
             ViewData["Furnitures"] = new SelectList(tempFurnitures, "Id", "Name");
+            ViewData["SumPrice"] = order.Price;
 
             return View("Details", order);
         }

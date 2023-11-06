@@ -8,6 +8,8 @@
 
     var currentUser = UserManager.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
     var addedFurnitures = ViewData["AddedFurnitures"] as List<Furniture>;
+    decimal couponValue = (decimal)ViewData["couponValue"];
+    string couponInfo = ViewData["couponValidation"].ToString();
     decimal sum = 0; int furnitureId;
 }
 
@@ -43,6 +45,7 @@
                                 @foreach (var item in addedFurnitures)
                                 {
                                     furnitureId = item.Id;
+                                    
                                     <tr class="align-middle">
                                         <td>
                                             <img src="@Url.Action("GetImage", new {id=item.Id})" alt="Image" class="img-fluid rounded mx-auto d-block" width="100">
@@ -56,7 +59,6 @@
                                     </tr>
                                     sum += item.Price;
                                 }
-
                             }
                         </tbody>
                     </table>
@@ -65,37 +67,42 @@
 
         <div class="row a-text-color2">
             <div class="col-lg-6 col-md-6 col-sm-4">
-                @* <button class="btn btn-item" asp-controller="Home" asp-action="Index">Continue Shopping</button>
+                <button class="btn btn-item" asp-controller="Home" asp-action="Catalog">Continue Shopping</button>
                 <br />
-                <label class="h4 mt-3" for="coupon">Coupon</label>
-                <p>Enter your coupon code if you have one.</p>
-                <input type="text" class="form-control py-3 w-50" id="coupon" placeholder="Coupon Code">
-                <button class="btn btn-item mt-3">Apply Coupon</button> *@
+                <form method="post" asp-controller="Cart" asp-action="ApplyCoupon" >
+                    <label class="h4 mt-3" for="coupon">Coupon</label>
+                    <p>@couponInfo</p>
+                    <input type="hidden" name="customerId" value="@currentUser.Id" />
+                    <input type="text" name="couponCode" class="form-control py-3 w-50" placeholder="Coupon Code">
+                    <button class="btn btn-item mt-3">Apply Coupon</button>
+                </form>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-4">
                 <div class="row justify-content-end text-end">
                     <div class="col-md-12 col-lg-12 col-sm-12">
-                        <span class="mt-3">Total</span>
+                        <span class="mt-3">Price</span>
                         <strong>$@sum</strong>
                     </div>
                     <div class="col-md-12 col-lg-12 col-sm-12">
-                        <button class="btn btn-item mt-3"> <a asp-controller="Cart" asp-action="Buy" asp-route-id="@currentUser.Id" class="text-decoration-none text-black">Checkout</a></button>
+                        <span class="mt-3">Coupon value</span>
+                        <strong>@couponValue%</strong>
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-sm-12">
+                        <span class="mt-3">Total</span>
+                        <strong>
+                            @if (couponValue != null)
+                            {
+                                sum -= (sum*(couponValue / 100));
+                                sum = Math.Round(sum, 2);
+                            }
+                            $@sum
+                        </strong>
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-sm-12">
+                        <button class="btn btn-item mt-3"> <a asp-controller="Cart" asp-action="Buy" asp-route-id="@currentUser.Id" asp-route-sum="@sum" class="text-decoration-none text-black">Checkout</a></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
-    @* <table>
-    <tr class="row">
-        <th class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </th>
-        <td class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Id)
-        </td>
-    </tr>
-    </table> *@
 </div>

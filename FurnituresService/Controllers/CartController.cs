@@ -3,6 +3,7 @@ using FurnituresService.Interfaces;
 using FurnituresService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -14,14 +15,20 @@ namespace FurnituresService.Controllers
 		private readonly IUsersRepository _usersRepository;
 		private readonly IFurnituresRepository _furnituresRepository;
 		private readonly IOrdersRepository _ordersRepository;
+		private readonly ICategoriesRepository _categoriesRepository;
 		private readonly ApplicationDbContext _context;
-		public CartController(ICartRepository cartRepository, IUsersRepository usersRepository, IFurnituresRepository furnituresRepository, IOrdersRepository ordersRepository, ApplicationDbContext context)
+		public CartController(ICartRepository cartRepository, 
+            IUsersRepository usersRepository, 
+            IFurnituresRepository furnituresRepository, 
+            IOrdersRepository ordersRepository, 
+            ICategoriesRepository categoriesRepository,
+            ApplicationDbContext context)
 		{
 			_cartRepository = cartRepository;
 			_usersRepository = usersRepository;
 			_furnituresRepository = furnituresRepository;
             _ordersRepository = ordersRepository;
-
+            _categoriesRepository = categoriesRepository;
             _context = context;
         }
 
@@ -37,10 +44,21 @@ namespace FurnituresService.Controllers
 				};
 				_cartRepository.Insert(newCart);
 			}
+            var cart = await _cartRepository.GetByUserId(id);
+            var coupon = _context.Coupons.SingleOrDefault(c => c.Id == cart.CouponId);
+            if (coupon != null)
+            {
+                ViewData["couponValue"] = coupon.CouponValuePercentage;
+            }
+            else
+            {
+                decimal value = 0M;
+                ViewData["couponValue"] = value;
+            }
+            ViewData["couponValidation"] = "Enter your coupon code if you have one.";
+            ViewData["AddedFurnitures"] = _cartRepository.GetAddedFurnitures(id);
 
-			ViewData["AddedFurnitures"] = _cartRepository.GetAddedFurnitures(id);
-
-            return View("Show", await _cartRepository.GetByUserId(id));
+            return View("Show", cart);
 		}
         public async Task<FileResult> GetImage(int id)
         {
@@ -70,7 +88,7 @@ namespace FurnituresService.Controllers
                 return View("Show");
             }
         }
-		public async Task<IActionResult> Buy(string id)
+		public async Task<IActionResult> Buy(string id, decimal sum)
 		{
             try
             {
@@ -85,11 +103,14 @@ namespace FurnituresService.Controllers
                     allOrderedFurnitures.Add(new OrderFurniture { FurnitureId=item.Id, });
                 }
                 newOrder.OrderFurnitures = allOrderedFurnitures;
+                newOrder.Price = sum;
                 _ordersRepository.Update(newOrder);
 
 
                 var currentUser = await _usersRepository.GetByIdAsync(id);
                 await _cartRepository.RemoveAllFurnituresFromCart(currentUser);
+                currentCart.CouponId = null;
+                _cartRepository.Update(currentCart);
 
                 return RedirectToAction("Index", "Home");
             }
@@ -98,6 +119,55 @@ namespace FurnituresService.Controllers
                 Trace.WriteLine($"Cart Buy error: {ex}");
                 return View("Show");
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApplyCoupon(string customerId, string couponCode)
+        {
+            var coupon = _context.Coupons.SingleOrDefault(c => c.Code == couponCode);
+            var theCart = await _cartRepository.GetByUserId(customerId);
+
+            
+
+            if (theCart.CouponId == null)
+            {
+               if (coupon != null)
+               {
+                   bool isCorrectProduct = false;
+                   IEnumerable<Furniture> furnituresFromTheCart = _cartRepository.GetAddedFurnitures(customerId);
+                   var category = await _categoriesRepository.GetByIdAsync(coupon.CouponCategoryId);
+                   foreach (var item in furnituresFromTheCart)
+                   {
+                        var furnitureCategory = await _categoriesRepository.GetByIdAsync(item.CategoryId);
+                        if (category.Name == furnitureCategory.Name)
+                       {
+                           isCorrectProduct = true; break;
+                       }
+                   }
+                   if (isCorrectProduct)
+                   {
+                       theCart.CouponId = coupon.Id;
+                       _cartRepository.Update(theCart);
+                       ViewData["couponValue"] = coupon.CouponValuePercentage;
+                       ViewData["couponValidation"] = "The coupon added.";
+                   }
+                   else
+                   {
+                       ViewData["couponValidation"] = "There is 0 products in the category for which there is a coupon.";
+                   }
+               }
+               else
+               {
+                   ViewData["couponValidation"] = "The entered code is wrong.";
+               }
+                
+
+            }
+            else
+            {
+                ViewData["couponValidation"] = "You already used coupon.";
+            }
+
+            return RedirectToAction("Show", "Cart", new { id = customerId });
         }
     }
 }

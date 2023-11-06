@@ -12,5 +12,7 @@ namespace FurnituresService.Models
         public string UserId { get; set; }
         public IdentityUser User { get; set; }
         public ICollection<CartFurniture>? CartFurnitures { get; set; }
+        public int? CouponId { get; set; }
+        public Coupon? Coupon { get; set; }
     }
 }

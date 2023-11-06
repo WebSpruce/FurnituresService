@@ -4,6 +4,7 @@ using FurnituresService.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FurnituresService.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231106083241_Coupons")]
+    partial class Coupons
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,16 +33,11 @@ namespace FurnituresService.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CouponId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CouponId");
 
                     b.HasIndex("UserId");
 
@@ -93,10 +91,6 @@ namespace FurnituresService.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CouponCategoryId")
                         .HasColumnType("int");
@@ -399,17 +393,11 @@ namespace FurnituresService.Data.Migrations
 
             modelBuilder.Entity("FurnituresService.Models.Cart", b =>
                 {
-                    b.HasOne("FurnituresService.Models.Coupon", "Coupon")
-                        .WithMany("Carts")
-                        .HasForeignKey("CouponId");
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Coupon");
 
                     b.Navigation("User");
                 });
@@ -542,11 +530,6 @@ namespace FurnituresService.Data.Migrations
             modelBuilder.Entity("FurnituresService.Models.Category", b =>
                 {
                     b.Navigation("Furnitures");
-                });
-
-            modelBuilder.Entity("FurnituresService.Models.Coupon", b =>
-                {
-                    b.Navigation("Carts");
                 });
 
             modelBuilder.Entity("FurnituresService.Models.Furniture", b =>

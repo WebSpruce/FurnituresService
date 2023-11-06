@@ -36,6 +36,12 @@
             <td class="col-sm-10">
                 <select asp-for="OrderFurnitures" class="form-control w-50" asp-items="@(ViewData["Furnitures"] as SelectList)" multiple disabled></select>
             </td>
+            <th>
+                Price
+            </th>
+            <td>
+                <p>@ViewData["SumPrice"]</p>
+            </td>
         </tr>
     </table>
 </div>

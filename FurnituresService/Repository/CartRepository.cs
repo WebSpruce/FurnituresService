@@ -51,7 +51,12 @@ namespace FurnituresService.Repository
             }
             return Save();
         }
-        public bool Save()
+        public bool Update(Cart cart)
+		{
+            _context.Carts.Update(cart);
+            return Save();
+        }
+		public bool Save()
 		{
 			var saved = _context.SaveChanges();
 			return saved > 0 ? true : false;
