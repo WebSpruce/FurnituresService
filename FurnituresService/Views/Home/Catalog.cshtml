@@ -27,13 +27,20 @@
 				@if(categories!=null){
 					@foreach(var category in categories)
 					{
-						<li><a class="text-decoration-none a-text-color2" href="@Url.Action("CatalogByCategory", new {categoryId=category.Id})">@category.Name</a></li>
+						@if(category.Name != "Coupon")
+						{
+							<li><a class="text-decoration-none a-text-color2" href="@Url.Action("CatalogByCategory", new {categoryId=category.Id})">@category.Name</a></li>
+						}
 					}
 				}
 			</ul>
 		</div>
 		<div class="col-lg-10 col-md-12 mb-4 col-sm-12">
 			<div class="row">
+				<form asp-controller="Home" asp-action="Catalog" method="get" class="input-group align-middle mt-3 mb-3">
+					<input type="text" name="searchText" class="form-control w-50" />
+					<input type="submit" value="Search" class="btn a-text-color a-field-color" />
+				</form>
 				@foreach (var item in Model)
 				{
 					<div class="col-sm-12 col-md-6 mb-4 col-lg-4">

@@ -72,10 +72,15 @@ namespace FurnituresService.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> Catalog()
+        public async Task<IActionResult> Catalog(string searchText)
         {
             var furnitures = await _furnitureRepo.GetAllAsync();
             ViewData["Categories"] = await _categoriesRepository.GetAllAsync();
+
+            if (!String.IsNullOrEmpty(searchText))
+            {
+                furnitures = furnitures.Where(f=>f.Name.ToLower()!.Contains(searchText));
+            }
 
             return View("Catalog", furnitures);
         }
