@@ -1,0 +1,47 @@
+﻿@model IEnumerable<FurnituresService.Models.Order>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "UserOrdersShow";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var currentUser = UserManager.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
+}
+
+<h4 class="a-text-color2 fw-bold text-start">My Orders</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDate)
+            </td>
+            <td>
+                    <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="UserOrdersDetails" asp-route-id="@item.Id" asp-route-customerId="@currentUser.Id">Details</a></button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

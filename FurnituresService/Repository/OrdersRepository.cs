@@ -22,6 +22,10 @@ namespace FurnituresService.Repository
         {
             return await _context.Orders.FirstOrDefaultAsync(o=>o.Id == id);
         }
+        public async Task<IEnumerable<Order>> GetByCustomerIdAsync(string customerId)
+        {
+            return await _context.Orders.Where(o=>o.UserId == customerId).ToListAsync();
+        }
         public bool Insert(Order order)
         {
             _context.Orders.AddAsync(order);

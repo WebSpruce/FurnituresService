@@ -1,6 +1,7 @@
 ﻿using FurnituresService.Data;
 using FurnituresService.Interfaces;
 using FurnituresService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
@@ -16,17 +17,20 @@ namespace FurnituresService.Controllers
             _context = context;
             _categoryRepo = categoryRepo;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Show()
         {
             var categories = await _categoryRepo.GetAllAsync();
             return View("Show", categories);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Insert()
         {
             return View("Insert");
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Insert(Category category)
         {
@@ -41,6 +45,7 @@ namespace FurnituresService.Controllers
                 return View(category);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
@@ -59,6 +64,7 @@ namespace FurnituresService.Controllers
 
             return View(oldCategory);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(Category category)
         {
@@ -73,6 +79,7 @@ namespace FurnituresService.Controllers
                 return View(category);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -80,6 +87,7 @@ namespace FurnituresService.Controllers
 
             return View(category);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmation(int id)
         {

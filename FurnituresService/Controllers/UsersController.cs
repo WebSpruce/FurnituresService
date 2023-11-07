@@ -1,6 +1,7 @@
 ﻿using FurnituresService.Data;
 using FurnituresService.Interfaces;
 using FurnituresService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,17 +20,20 @@ namespace FurnituresService.Controllers
             _userManager = userManager;
             _usersRepository = usersRepository;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Show()
         {
             var users = await _usersRepository.GetAllAsync();
             return View("Show", users);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Insert()
         {
             return View("Insert");
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Insert(IdentityUser user)
         {
@@ -54,6 +58,7 @@ namespace FurnituresService.Controllers
                 return View(user);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Update(string id)
         {
@@ -77,6 +82,7 @@ namespace FurnituresService.Controllers
             };
             return View(oldUser);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(IdentityUser user)
         {
@@ -94,12 +100,14 @@ namespace FurnituresService.Controllers
                 return View(user);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _usersRepository.GetByIdAsync(id);
             return View(user);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmation(string id)
         {

@@ -19,6 +19,7 @@ namespace FurnituresService.Controllers
             _furnitureRepo = furnitureRepo;
             _categoryRepo = categoryRepo;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Show()
         {
@@ -38,6 +39,7 @@ namespace FurnituresService.Controllers
                 return File(furnitureFromDb.ImageData, "image/png");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Insert()
         {
@@ -45,6 +47,7 @@ namespace FurnituresService.Controllers
             ViewData["Categories"] = new SelectList(categories, "Id", "Name");
             return View("Insert");
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Insert(IFormFile ImageData ,Furniture furniture)
         {
@@ -70,6 +73,7 @@ namespace FurnituresService.Controllers
                 return View(furniture);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -80,6 +84,7 @@ namespace FurnituresService.Controllers
 
             return View("Details", furniture);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
@@ -105,6 +110,7 @@ namespace FurnituresService.Controllers
 
             return View(oldFurniture);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(IFormFile ImageData, Furniture furniture)
         {
@@ -131,6 +137,7 @@ namespace FurnituresService.Controllers
                 return View(furniture);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -138,6 +145,7 @@ namespace FurnituresService.Controllers
 
             return View(furniture);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmation(int id)
         {
