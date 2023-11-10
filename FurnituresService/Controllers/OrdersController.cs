@@ -1,43 +1,41 @@
-﻿using FurnituresService.Data;
-using FurnituresService.Interfaces;
-using FurnituresService.Models;
+﻿using FurnituresServiceDatabase.Data;
+using FurnituresServiceModels.Models;
+using FurnituresServiceService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Security.Claims;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace FurnituresService.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IOrdersRepository _ordersRepository;
-        private readonly IUsersRepository _userRepository;
-        private readonly IFurnituresRepository _furnituresRepository;
-        public OrdersController(ApplicationDbContext context, IOrdersRepository ordersRepository, IUsersRepository usersRepository, IFurnituresRepository furnituresRepository)
+        private readonly IOrderService _orderService;
+        private readonly IUserService _userService;
+        public OrdersController(ApplicationDbContext context, 
+            IOrderService orderService, 
+            IUserService userService)
         {
             _context = context;
-            _ordersRepository = ordersRepository;
-            _userRepository = usersRepository;
-            _furnituresRepository = furnituresRepository;
+			_orderService = orderService;
+			_userService = userService;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Show()
         {
-            var orders = await _ordersRepository.GetAllAsync();
+            var orders = await _orderService.GetAllAsync();
             return View("Show", orders);
         }
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var order = await _ordersRepository.GetByIdAsync(id);
+            var order = await _orderService.GetByIdAsync(id);
             GetOrderedFurnitures(order, id);
 
             return View("Details", order);
@@ -59,7 +57,7 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> Insert()
         {
-            var users = await _userRepository.GetAllAsync();
+            var users = await _userService.GetAllAsync();
             ViewData["Users"] = new SelectList(users, "Id", "Email");
             var furnitures = _context.Furnitures.Where(f => f.Name != "DEFAULT").ToList();
             ViewData["Furnitures"] = new SelectList(furnitures, "Id", "Name");
@@ -71,7 +69,7 @@ namespace FurnituresService.Controllers
         {
             try
             {
-                var selectedUser = await _userRepository.GetByIdAsync(order.UserId);
+                var selectedUser = await _userService.GetByIdAsync(order.UserId);
                 order.User = selectedUser;
 
                 var selectedFurnitureIds = Request.Form["OrderFurnitures"].Select(int.Parse).ToList();
@@ -81,7 +79,7 @@ namespace FurnituresService.Controllers
                     var selectedFurniture = await _context.Furnitures.FindAsync(furnitureId);
                     _context.OrderFurnitures.Add(new OrderFurniture { Order = order, Furniture = selectedFurniture });
                 }
-                _ordersRepository.Insert(order);
+				_orderService.Insert(order);
                 return RedirectToAction("Show");
             }
             catch (Exception ex)
@@ -94,7 +92,7 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var order = await _ordersRepository.GetByIdAsync(id);
+            var order = await _orderService.GetByIdAsync(id);
 
             return View(order);
         }
@@ -111,7 +109,7 @@ namespace FurnituresService.Controllers
             var item = _context.OrderFurnitures.Where(of => of.Order == order).FirstOrDefault();
             _context.OrderFurnitures.Remove(item);
 
-            _ordersRepository.Delete(order);
+			_orderService.Delete(order);
             return RedirectToAction("Show");
         }
 
@@ -122,7 +120,7 @@ namespace FurnituresService.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if(userId == customerId)
             {
-                var orders = await _ordersRepository.GetByCustomerIdAsync(customerId);
+                var orders = await _orderService.GetByCustomerIdAsync(customerId);
                 return View("UserOrdersShow", orders);
             }
             else
@@ -136,7 +134,7 @@ namespace FurnituresService.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == customerId)
             {
-                var order = await _ordersRepository.GetByIdAsync(id);
+                var order = await _orderService.GetByIdAsync(id);
                 GetOrderedFurnitures(order, id);
                 return View("UserOrdersDetails", order);
             }

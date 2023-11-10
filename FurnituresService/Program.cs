@@ -1,6 +1,8 @@
-using FurnituresService.Data;
-using FurnituresService.Interfaces;
-using FurnituresService.Repository;
+using FurnituresServiceDatabase.Data;
+using FurnituresServiceDatabase.Interfaces;
+using FurnituresServiceDatabase.Repository;
+using FurnituresServiceService.Interfaces;
+using FurnituresServiceService.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +16,19 @@ namespace FurnituresService
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<IFurnituresRepository, FurnituresRepository>();
-            builder.Services.AddScoped<ICategoriesRepository, CategoryRepository>();
-            builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-            builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
-            builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+			builder.Services.AddScoped<IFurnituresRepository, FurnituresRepository>();
+			builder.Services.AddScoped<ICategoriesRepository, CategoryRepository>();
+			builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+			builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
+			builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+			builder.Services.AddScoped<IFurnitureService, FurnitureService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));

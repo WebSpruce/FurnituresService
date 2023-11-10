@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FurnituresService.Models.Order>
+﻿@model IEnumerable<FurnituresServiceModels.Models.Order>
 
 @{
     ViewData["Title"] = "Show";
@@ -34,7 +34,6 @@
                 @Html.DisplayFor(modelItem => item.UserId)
             </td>
             <td>
-                <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Update" asp-route-id="@item.Id">Edit</a></button> 
                 <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Details" asp-route-id="@item.Id">Details</a></button> 
                 <button type="button" class="btn a-text-color a-field-color"><a class="text-decoration-none a-text-color" asp-action="Delete" asp-route-id="@item.Id">Delete</a></button>
             </td>

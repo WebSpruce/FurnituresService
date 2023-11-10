@@ -1,9 +1,8 @@
-﻿using FurnituresService.Data;
-using FurnituresService.Interfaces;
-using FurnituresService.Models;
+﻿using FurnituresServiceDatabase.Data;
+using FurnituresServiceService.Interfaces;
+using FurnituresServiceModels.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace FurnituresService.Controllers
@@ -11,17 +10,17 @@ namespace FurnituresService.Controllers
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ICategoriesRepository _categoryRepo;
-        public CategoriesController(ApplicationDbContext context, ICategoriesRepository categoryRepo)
+        private readonly ICategoryService _categoryService;
+        public CategoriesController(ApplicationDbContext context, ICategoryService categoryService)
         {
             _context = context;
-            _categoryRepo = categoryRepo;
+			_categoryService = categoryService;
         }
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Show()
         {
-            var categories = await _categoryRepo.GetAllAsync();
+            var categories = await _categoryService.GetAllAsync();
             return View("Show", categories);
         }
         [Authorize(Roles = "Admin")]
@@ -36,7 +35,7 @@ namespace FurnituresService.Controllers
         {
             try
             {
-                _categoryRepo.Insert(category);
+				_categoryService.Insert(category);
                 return RedirectToAction("Show");
             }
             catch (Exception ex)
@@ -49,7 +48,7 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
-            var category = await _categoryRepo.GetByIdAsync(id);
+            var category = await _categoryService.GetByIdAsync(id);
             if (category == null)
             {
                 await Response.WriteAsync("<script>alert('Couldn't edit this category.')</script>");
@@ -70,7 +69,7 @@ namespace FurnituresService.Controllers
         {
             try
             {
-                _categoryRepo.Update(category);
+				_categoryService.Update(category);
                 return RedirectToAction("Show");
             }
             catch (Exception ex)
@@ -83,7 +82,7 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _categoryRepo.GetByIdAsync(id);
+            var category = await _categoryService.GetByIdAsync(id);
 
             return View(category);
         }
@@ -98,7 +97,7 @@ namespace FurnituresService.Controllers
                 return NotFound();
             }
 
-            _categoryRepo.Delete(category);
+			_categoryService.Delete(category);
             return RedirectToAction("Show");
         }
     }

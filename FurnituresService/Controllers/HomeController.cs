@@ -1,10 +1,7 @@
-﻿using FurnituresService.Data;
-using FurnituresService.Interfaces;
-using FurnituresService.Models;
-using FurnituresService.Repository;
-using Microsoft.AspNetCore.Identity;
+﻿using FurnituresServiceDatabase.Data;
+using FurnituresServiceModels.Models;
+using FurnituresServiceService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace FurnituresService.Controllers
@@ -12,35 +9,29 @@ namespace FurnituresService.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IFurnituresRepository _furnitureRepo;
-        private readonly ICartRepository _cartRepository;
-        private readonly IUsersRepository _usersRepository;
-        private readonly ICategoriesRepository _categoriesRepository;
-        private readonly SignInManager<IdentityUser> _signInManager;
+		private readonly IFurnitureService _furnitureService;
+		private readonly ICartService _cartService;
+        private readonly ICategoryService _categoriesService;
         public HomeController(ApplicationDbContext context, 
-            IFurnituresRepository furnituresRepo, 
-            ICartRepository cartRepository, 
-            IUsersRepository usersRepository, 
-            ICategoriesRepository categoriesRepository,
-            SignInManager<IdentityUser> signInManager)
+			IFurnitureService furnitureService,
+			ICartService cartService,
+			ICategoryService categoriesService)
         {
             _context = context;
-            _furnitureRepo = furnituresRepo;
-            _cartRepository = cartRepository;
-            _usersRepository = usersRepository;
-            _categoriesRepository = categoriesRepository;
-            _signInManager = signInManager;
+			_furnitureService = furnitureService;
+			_cartService = cartService;
+			_categoriesService = categoriesService;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-			var furnitures = await _furnitureRepo.GetAllAsync();
+			var furnitures = await _furnitureService.GetAllAsync();
 
 			return View("Index", furnitures);
         }
 		public async Task<FileResult> GetImage(int id)
 		{
-			var furniture = await _furnitureRepo.GetByIdAsync(id);
+			var furniture = await _furnitureService.GetByIdAsync(id);
 			if (furniture != null && furniture.ImageData != null)
 			{
 				return File(furniture.ImageData, "image/jpeg");
@@ -55,8 +46,8 @@ namespace FurnituresService.Controllers
         public async Task<IActionResult> AddToCart(int furnitureId, string userId)
         {
             try {
-				var clickedFurniture = await _furnitureRepo.GetByIdAsync(furnitureId);
-                await _cartRepository.InsertFurnitureToCart(userId, clickedFurniture);
+				var clickedFurniture = await _furnitureService.GetByIdAsync(furnitureId);
+                await _cartService.InsertFurnitureToCart(userId, clickedFurniture);
 				return RedirectToAction("Show","Cart", new { id = userId });
 			}
 			catch(Exception ex)
@@ -74,12 +65,11 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> Catalog(string searchText)
         {
-            var furnitures = await _furnitureRepo.GetAllAsync();
-            ViewData["Categories"] = await _categoriesRepository.GetAllAsync();
-
+            var furnitures = await _furnitureService.GetAllAsync();
+            ViewData["Categories"] = await _categoriesService.GetAllAsync();
             if (!String.IsNullOrEmpty(searchText))
             {
-                furnitures = furnitures.Where(f=>f.Name.ToLower()!.Contains(searchText));
+                furnitures = furnitures.Where(f=>f.Name.ToLower()!.Contains(searchText.ToLower()));
             }
 
             return View("Catalog", furnitures);
@@ -87,8 +77,8 @@ namespace FurnituresService.Controllers
         [HttpGet]
         public async Task<IActionResult> CatalogByCategory(int categoryId)
         {
-            var furnitures = await _furnitureRepo.GetByCategory(categoryId);
-			ViewData["Categories"] = await _categoriesRepository.GetAllAsync();
+            var furnitures = await _furnitureService.GetByCategory(categoryId);
+			ViewData["Categories"] = await _categoriesService.GetAllAsync();
 			return View("Catalog", furnitures);
 		}
 

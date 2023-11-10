@@ -1,50 +1,47 @@
-﻿using FurnituresService.Data;
-using FurnituresService.Interfaces;
-using FurnituresService.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using FurnituresServiceDatabase.Data;
+using FurnituresServiceService.Interfaces;
+using FurnituresServiceModels.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace FurnituresService.Controllers
 {
 	public class CartController : Controller
 	{
-		private readonly ICartRepository _cartRepository;
-		private readonly IUsersRepository _usersRepository;
-		private readonly IFurnituresRepository _furnituresRepository;
-		private readonly IOrdersRepository _ordersRepository;
-		private readonly ICategoriesRepository _categoriesRepository;
+		private readonly ICartService _cartService;
+		private readonly IUserService _usersService;
+		private readonly IFurnitureService _furnituresService;
+		private readonly IOrderService _ordersService;
+		private readonly ICategoryService _categoriesService;
 		private readonly ApplicationDbContext _context;
-		public CartController(ICartRepository cartRepository, 
-            IUsersRepository usersRepository, 
-            IFurnituresRepository furnituresRepository, 
-            IOrdersRepository ordersRepository, 
-            ICategoriesRepository categoriesRepository,
+		public CartController(ICartService cartService,
+			IUserService usersService,
+			IFurnitureService furnituresService,
+			IOrderService ordersService,
+			ICategoryService categoriesService,
             ApplicationDbContext context)
 		{
-			_cartRepository = cartRepository;
-			_usersRepository = usersRepository;
-			_furnituresRepository = furnituresRepository;
-            _ordersRepository = ordersRepository;
-            _categoriesRepository = categoriesRepository;
+			_cartService = cartService;
+			_usersService = usersService;
+			_furnituresService = furnituresService;
+			_ordersService = ordersService;
+			_categoriesService = categoriesService;
             _context = context;
         }
 
 		[HttpGet]
 		public async Task<IActionResult> Show(string id)
 		{
-			if(await _cartRepository.GetByUserId(id) == null)
+			if(await _cartService.GetByUserId(id) == null)
 			{
 				Cart newCart = new Cart()
 				{
 					UserId = id,
-					User = await _usersRepository.GetByIdAsync(id)
+					User = await _usersService.GetByIdAsync(id)
 				};
-				_cartRepository.Insert(newCart);
+				_cartService.Insert(newCart);
 			}
-            var cart = await _cartRepository.GetByUserId(id);
+            var cart = await _cartService.GetByUserId(id);
             var coupon = _context.Coupons.SingleOrDefault(c => c.Id == cart.CouponId);
             if (coupon != null)
             {
@@ -56,13 +53,13 @@ namespace FurnituresService.Controllers
                 ViewData["couponValue"] = value;
             }
             ViewData["couponValidation"] = "Enter your coupon code if you have one.";
-            ViewData["AddedFurnitures"] = _cartRepository.GetAddedFurnitures(id);
+            ViewData["AddedFurnitures"] = _cartService.GetAddedFurnitures(id);
 
             return View("Show", cart);
 		}
         public async Task<FileResult> GetImage(int id)
         {
-            var furniture = await _furnituresRepository.GetByIdAsync(id);
+            var furniture = await _furnituresService.GetByIdAsync(id);
             if (furniture != null && furniture.ImageData != null)
             {
                 return File(furniture.ImageData, "image/jpeg");
@@ -77,9 +74,9 @@ namespace FurnituresService.Controllers
 		{
             try
             {
-				var currentUser = await _usersRepository.GetByIdAsync(id);
-				var clickedFurniture = await _furnituresRepository.GetByIdAsync(furnitureId);
-                await _cartRepository.RemoveFurnitureToCart(currentUser, clickedFurniture);
+				var currentUser = await _usersService.GetByIdAsync(id);
+				var clickedFurniture = await _furnituresService.GetByIdAsync(furnitureId);
+                await _cartService.RemoveFurnitureToCart(currentUser, clickedFurniture);
                 return RedirectToAction("Show", "Cart", new { id = id });
             }
             catch (Exception ex)
@@ -93,10 +90,10 @@ namespace FurnituresService.Controllers
             try
             {
                 var newOrder = new Order { UserId = id };
-                _ordersRepository.Insert(newOrder);
+				_ordersService.Insert(newOrder);
 
-                var currentCart = await _cartRepository.GetByUserId(id);
-                IEnumerable<Furniture> furnituresFromTheCart = _cartRepository.GetAddedFurnitures(id);
+                var currentCart = await _cartService.GetByUserId(id);
+                IEnumerable<Furniture> furnituresFromTheCart = _cartService.GetAddedFurnitures(id);
                 List<OrderFurniture> allOrderedFurnitures = new List<OrderFurniture>();
                 foreach (var item in furnituresFromTheCart)
                 {
@@ -104,13 +101,13 @@ namespace FurnituresService.Controllers
                 }
                 newOrder.OrderFurnitures = allOrderedFurnitures;
                 newOrder.Price = sum;
-                _ordersRepository.Update(newOrder);
+				_ordersService.Update(newOrder);
 
 
-                var currentUser = await _usersRepository.GetByIdAsync(id);
-                await _cartRepository.RemoveAllFurnituresFromCart(currentUser);
+                var currentUser = await _usersService.GetByIdAsync(id);
+                await _cartService.RemoveAllFurnituresFromCart(currentUser);
                 currentCart.CouponId = null;
-                _cartRepository.Update(currentCart);
+				_cartService.Update(currentCart);
 
                 return RedirectToAction("Index", "Home");
             }
@@ -124,7 +121,7 @@ namespace FurnituresService.Controllers
         public async Task<IActionResult> ApplyCoupon(string customerId, string couponCode)
         {
             var coupon = _context.Coupons.SingleOrDefault(c => c.Code == couponCode);
-            var theCart = await _cartRepository.GetByUserId(customerId);
+            var theCart = await _cartService.GetByUserId(customerId);
 
             
 
@@ -133,11 +130,11 @@ namespace FurnituresService.Controllers
                if (coupon != null)
                {
                    bool isCorrectProduct = false;
-                   IEnumerable<Furniture> furnituresFromTheCart = _cartRepository.GetAddedFurnitures(customerId);
-                   var category = await _categoriesRepository.GetByIdAsync(coupon.CouponCategoryId);
+                   IEnumerable<Furniture> furnituresFromTheCart = _cartService.GetAddedFurnitures(customerId);
+                   var category = await _categoriesService.GetByIdAsync(coupon.CouponCategoryId);
                    foreach (var item in furnituresFromTheCart)
                    {
-                        var furnitureCategory = await _categoriesRepository.GetByIdAsync(item.CategoryId);
+                        var furnitureCategory = await _categoriesService.GetByIdAsync(item.CategoryId);
                         if (category.Name == furnitureCategory.Name)
                        {
                            isCorrectProduct = true; break;
@@ -146,7 +143,7 @@ namespace FurnituresService.Controllers
                    if (isCorrectProduct)
                    {
                        theCart.CouponId = coupon.Id;
-                       _cartRepository.Update(theCart);
+					   _cartService.Update(theCart);
                        ViewData["couponValue"] = coupon.CouponValuePercentage;
                        ViewData["couponValidation"] = "The coupon added.";
                    }

@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@model IEnumerable<FurnituresService.Models.Furniture>
+@model IEnumerable<FurnituresServiceModels.Models.Furniture>
 @inject SignInManager<IdentityUser> SignInManger
 @inject UserManager<IdentityUser> UserManager
 @{
@@ -7,7 +7,7 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 
 	var currentUser = UserManager.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
-	var categories = ViewData["Categories"] as List<Category>;
+	var categories = ViewData["Categories"] as List<FurnituresServiceModels.Models.Category>;
 }
 
 <div class="container">
