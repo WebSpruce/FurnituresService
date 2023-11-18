@@ -24,7 +24,11 @@ namespace FurnituresServiceService.Services
 		{
 			return await _ordersRepository.GetByCustomerIdAsync(customerId);
 		}
-		public bool Insert(Order order)
+		public async Task<IEnumerable<Furniture>> GetOrderedFurnitures(int id)
+		{
+			return await _ordersRepository.GetOrderedFurnitures(id);
+		}
+        public bool Insert(Order order)
 		{
 			return _ordersRepository.Insert(order);
 		}

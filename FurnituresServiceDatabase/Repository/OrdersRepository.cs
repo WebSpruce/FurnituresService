@@ -2,6 +2,7 @@
 using FurnituresServiceDatabase.Interfaces;
 using FurnituresServiceModels.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 
 namespace FurnituresServiceDatabase.Repository
 {
@@ -25,6 +26,18 @@ namespace FurnituresServiceDatabase.Repository
         public async Task<IEnumerable<Order>> GetByCustomerIdAsync(string customerId)
         {
             return await _context.Orders.Where(o=>o.UserId == customerId).ToListAsync();
+        }
+        public async Task<IEnumerable<Furniture>> GetOrderedFurnitures(int id)
+        {
+            List<OrderFurniture> orderFurnitures = new List<OrderFurniture>();
+            orderFurnitures = await _context.OrderFurnitures.Where(of => of.Order.Id == id).ToListAsync();
+            ICollection<Furniture> tempFurnitures = new Collection<Furniture>();
+            foreach (var item in orderFurnitures)
+            {
+                var furniture = await _context.Furnitures.Where(f => f.Id == item.FurnitureId).FirstOrDefaultAsync();
+                tempFurnitures.Add(furniture);
+            }
+            return tempFurnitures;
         }
         public bool Insert(Order order)
         {

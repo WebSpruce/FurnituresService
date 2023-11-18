@@ -3,6 +3,7 @@ using FurnituresServiceApi.Dto;
 using FurnituresServiceModels.Models;
 using FurnituresServiceService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace FurnituresServiceApi.Controllers
 {
@@ -33,6 +34,14 @@ namespace FurnituresServiceApi.Controllers
             var order = await _orderService.GetByIdAsync(id);
             var orderMap = _mapper.Map<OrderDto>(order);
             return Ok(orderMap);
+        }
+        // GET
+        [HttpGet("{orderId}")]
+        public async Task<ActionResult<IEnumerable<Furniture>>> GetOrderedFurnitures(int orderId)
+        {
+            var furnitures = _orderService.GetOrderedFurnitures(orderId).Result;
+            var furnituresMap = _mapper.Map<IEnumerable<FurnitureDto>>(furnitures);
+            return Ok(furnituresMap);
         }
 
         // POST api/Orders

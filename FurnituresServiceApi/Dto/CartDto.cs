@@ -9,5 +9,6 @@ namespace FurnituresServiceApi.Dto
         [ForeignKey("IdentityUser")]
         public string UserId { get; set; }
         public int? CouponId { get; set; }
+        public ICollection<CartFurniture>? CartFurnitures { get; set; }
     }
 }

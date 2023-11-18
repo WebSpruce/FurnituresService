@@ -7,7 +7,8 @@ namespace FurnituresServiceService.Interfaces
 		Task<IEnumerable<Order>> GetAllAsync();
 		Task<Order> GetByIdAsync(int id);
 		Task<IEnumerable<Order>> GetByCustomerIdAsync(string customerId);
-		bool Insert(Order order);
+        Task<IEnumerable<Furniture>> GetOrderedFurnitures(int id);
+        bool Insert(Order order);
 		bool Update(Order order);
 		bool Delete(Order order);
 		bool Save();
