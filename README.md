@@ -27,4 +27,5 @@
 <img src="https://github.com/WebSpruce/FurnituresService/assets/117351406/fa5b8439-3e2c-4a79-ac94-da51c28a128f" width=800>
 
 ### API:
-<img src="https://github.com/WebSpruce/FurnituresService/assets/117351406/d0484311-596f-4c17-be81-a6e313398220" width=800>
+<img src="https://github.com/WebSpruce/FurnituresService/assets/117351406/9e323fad-a4c2-4aba-94f1-e85df33b8746" width=800>
+<img src="https://github.com/WebSpruce/FurnituresService/assets/117351406/be885b71-faab-45db-82c6-61c6b8b64b65" width=800>
